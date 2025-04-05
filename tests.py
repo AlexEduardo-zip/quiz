@@ -1,6 +1,22 @@
 import pytest
 from model import Question
 
+@pytest.fixture
+def multiple_choice_question():
+    question = Question(title='What are primary colors?', max_selections=2)
+    question.add_choice('Red', True)
+    question.add_choice('Green', False)
+    question.add_choice('Blue', True)
+    question.add_choice('Yellow', False)
+    return question
+
+def test_select_correct_choices(multiple_choice_question):
+    correct_choices = multiple_choice_question.select_choices([1, 3])
+    assert correct_choices == [1, 3]
+
+def test_select_too_many_choices(multiple_choice_question):
+    with pytest.raises(Exception, match='Cannot select more than 2 choices'):
+        multiple_choice_question.select_choices([1, 2, 3])
 
 def test_create_question():
     question = Question(title='q1')
